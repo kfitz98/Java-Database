@@ -1,16 +1,12 @@
 package assignment;
 
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
-import java.awt.*;
 
 import javax.swing.*;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import com.mysql.jdbc.PreparedStatement;
 
 public class Screen extends Database implements ActionListener{
 	
@@ -19,17 +15,19 @@ public class Screen extends Database implements ActionListener{
 	JButton searchButton, showHighest,mostFailed,showAll,exitBtn;
 	ArrayList<String> array = new ArrayList<String>();
 	ArrayList<String> array2 = new ArrayList<String>();
+	ArrayList<String> array3 = new ArrayList<String>();
 	
 	String input;
 	private String testc;
 	
 	private JTable table;
 	private String[] columns = {"Test Centre","Passed","%","Failed","%","Failed Dangerous","%","Total"};
-	//private String [][] data = {{}};
 	
 	public Screen(){
 		
 		gui();
+		nctList();
+		Table();
 		
 	}
 	
@@ -57,10 +55,8 @@ public class Screen extends Database implements ActionListener{
 		showAll.setBounds(328, 0, 127, 38);
 		exitBtn.setBounds(647, 0, 127, 38);
 		
-		//table.setBounds(10, 49, 764, 502);
 		sp.setBounds(10, 49, 764, 502);
 		f.add(sp);
-		//f.add(table);
 		f.add(searchButton);
 		f.add(showHighest);
 		f.add(mostFailed);
@@ -73,6 +69,7 @@ public class Screen extends Database implements ActionListener{
 		showHighest.addActionListener(this);
 		mostFailed.addActionListener(this);
 		showAll.addActionListener(this);
+		exitBtn.addActionListener(this);
 		
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -95,18 +92,56 @@ public class Screen extends Database implements ActionListener{
 			
 		}catch(Exception e) {}
 		
-		//Insert data into JTable
+		table.setAutoCreateRowSorter(true);	
 		
-		for(int i = 0;i<array.size();i++)
+	}
+	
+	public  ArrayList<NCT> nctList()
+	{
+		ArrayList<NCT> nctList = new ArrayList<>();
+		
+		try {
+			NCT nct;
+			String SQL = "SELECT * FROM nct";
+			
+			result = st.executeQuery(SQL);
+			
+			while(result.next())
+			{
+				nct = new NCT(result.getString("Test_Centre"),result.getInt("Passed"),result.getDouble("Passed_Percent"),result.getInt("Failed"),result.getDouble("Failed_Percent"),result.getInt("Failed_Dangerous"),result.getDouble("Failed_Dangerous_Percent"),result.getInt("Total"));
+				nctList.add(nct);
+			}
+			
+		}catch(Exception e) {}
+		return nctList;
+		
+	}
+	
+	//Insert data into JTable
+	
+	public void Table()
+	{
+		DefaultTableModel model = new DefaultTableModel();
+		model.setColumnIdentifiers(new Object[] {"Test Centre","Passed","%","Failed","%","Failed Dangerous","%","Total"});
+		ArrayList<NCT> nct = nctList();
+		Object[] row = new Object[8];
+		
+		for(int i= 0; i<nct.size();i++)
 		{
-			String centre = array.get(i);
+			row[0] = nct.get(i).getC();
+			row[1] = nct.get(i).getP();
+			row[2] = nct.get(i).getPp();
+			row[3] = nct.get(i).getF();
+			row[4] = nct.get(i).getFp();
+			row[5] = nct.get(i).getFd();
+			row[6] = nct.get(i).getFdp();
+			row[7] = nct.get(i).getTotal();
 			
-			Object[] data = {centre};
+			model.addRow(row);
 			
-			model.addRow(data);
+			System.out.println(row[1]);
 		}
-		
-		
+		table.setModel(model);
 	}
 	
 
@@ -165,7 +200,7 @@ public class Screen extends Database implements ActionListener{
 				while(result.next()) {
 		
 					String a1 = result.getString("Test_Centre");
-					String a2 = result.getString("Passed");
+					int a2 = result.getInt("Passed");
 					String a3 = result.getString("Passed_Percent");
 					String a4 = result.getString("Failed");
 					String a5 = result.getString("Failed_Percent");
@@ -177,6 +212,11 @@ public class Screen extends Database implements ActionListener{
 
 				}
 			}catch(Exception ex) {}
+			
+		}
+		
+		if(e.getSource() == exitBtn)
+		{
 			
 		}
 		
