@@ -12,7 +12,7 @@ public class Screen extends Database implements ActionListener{
 	
 	JFrame f;
 	JTextArea area;
-	JButton searchButton, showHighest,mostFailed,showAll,exitBtn;
+	JButton searchBtn, hBtn,fBtn,showBtn,exitBtn;
 	ArrayList<String> array = new ArrayList<String>();
 	ArrayList<String> array2 = new ArrayList<String>();
 	ArrayList<String> array3 = new ArrayList<String>();
@@ -21,7 +21,6 @@ public class Screen extends Database implements ActionListener{
 	private String testc;
 	
 	private JTable table;
-	private String[] columns = {"Test Centre","Passed","%","Failed","%","Failed Dangerous","%","Total"};
 	
 	public Screen(){
 		
@@ -37,62 +36,41 @@ public class Screen extends Database implements ActionListener{
 		f.setSize(800,600);
 		f.setLayout(null);
 		f.setTitle("2016 NCT Pass/Fail Rates by Test Centre");
-		DefaultTableModel model = new DefaultTableModel(columns,0);
+		DefaultTableModel model = new DefaultTableModel();
 		
-		searchButton = new JButton("Search Test Centres");
-		showHighest = new JButton("Highest Pass Rate");
-		mostFailed = new JButton("Highest Fail Rate");
-		showAll = new JButton("Show All");
+		searchBtn = new JButton("Search Test Centres");
+		hBtn = new JButton("Highest Pass Rate");
+		fBtn = new JButton("Highest Fail Rate");
+		showBtn = new JButton("Show All");
 		exitBtn = new JButton("Exit");
 		JScrollPane sp = new JScrollPane();
-        model.setColumnIdentifiers(columns);
         table = new JTable(model);
         sp.setViewportView(table);
 		
-		searchButton.setBounds(10, 0, 127, 38);
-		showHighest.setBounds(147, 0, 127, 38);
-		mostFailed.setBounds(510, 0, 127, 38);
-		showAll.setBounds(328, 0, 127, 38);
+		searchBtn.setBounds(10, 0, 127, 38);
+		hBtn.setBounds(147, 0, 127, 38);
+		fBtn.setBounds(510, 0, 127, 38);
+		showBtn.setBounds(328, 0, 127, 38);
 		exitBtn.setBounds(647, 0, 127, 38);
 		
 		sp.setBounds(10, 49, 764, 502);
 		f.add(sp);
-		f.add(searchButton);
-		f.add(showHighest);
-		f.add(mostFailed);
-		f.add(showAll);
+		f.add(searchBtn);
+		f.add(hBtn);
+		f.add(fBtn);
+		f.add(showBtn);
 		f.add(exitBtn);
 		f.setVisible(true);
 		f.setLayout(null);
+		table.setAutoCreateRowSorter(true);	
 		
-		searchButton.addActionListener(this);
-		showHighest.addActionListener(this);
-		mostFailed.addActionListener(this);
-		showAll.addActionListener(this);
+		searchBtn.addActionListener(this);
+		hBtn.addActionListener(this);
+		fBtn.addActionListener(this);
+		showBtn.addActionListener(this);
 		exitBtn.addActionListener(this);
 		
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
-		try {
-			
-			String query = "SELECT * FROM nct";
-			result = st.executeQuery(query);
-			
-			while(result.next()) {
-				array.add(result.getString("Test_Centre"));
-			}
-			
-			for(String a: array) {
-				area.append(a + "\n");
-			}
-			System.out.println(array);
-
-			
-			
-		}catch(Exception e) {}
-		
-		table.setAutoCreateRowSorter(true);	
 		
 	}
 	
@@ -138,8 +116,6 @@ public class Screen extends Database implements ActionListener{
 			row[7] = nct.get(i).getTotal();
 			
 			model.addRow(row);
-			
-			System.out.println(row[1]);
 		}
 		table.setModel(model);
 	}
@@ -152,7 +128,7 @@ public class Screen extends Database implements ActionListener{
 	{
 		//Display highest pass rate
 		
-		if(e.getSource() == showHighest)
+		if(e.getSource() == hBtn)
 		{
 			try {
 				String b = "SELECT MAX(Passed) FROM nct";
@@ -170,7 +146,7 @@ public class Screen extends Database implements ActionListener{
 		
 		//Display highest fail rate
 		
-		if(e.getSource() == mostFailed)
+		if(e.getSource() == fBtn)
 		{
 			try {
 				//System.out.println(result.getInt(getFailed()));
@@ -187,7 +163,7 @@ public class Screen extends Database implements ActionListener{
 			}catch(Exception ex) {}
 		}
 		
-		if(e.getSource() == searchButton)
+		if(e.getSource() == searchBtn)
 		{
 			testc = JOptionPane.showInputDialog(null,"Search Test Centre");
 			
