@@ -1,7 +1,7 @@
 # Java-Assignment
 JDBC driver used: https://dev.mysql.com/downloads/connector/j/
 Database used: https://data.gov.ie/dataset/2016-make-model-year-failures-at-nct
-
+YouTube demo: https://youtu.be/eSlzQXHRmfM
 The purpose of this project is to connect to a database using Java. 
 
 The database.class connects to the database using the MySQL connector JDBC driver. The database was made using phpMyAdmin and the data taken from https://data.gov.ie/. The database used holds data on 2016 NCT pass/fail rates for each test centre in Ireland. It contains the test centre name, total number of cars that passed,failed, failed dangerously, and a total count.
